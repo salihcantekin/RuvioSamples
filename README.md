@@ -1,48 +1,48 @@
 # Ruvio Examples
 
-YouTube serisi için örnekler: her videoda gerçek bir senaryo, o senaryodaki sorun ve onu çözen Ruvio özelliği.
+Examples for the Ruvio YouTube series: in every video a real scenario, the problem in it, and the Ruvio feature that solves it.
 
-| # | Örnek | Ruvio özelliği | Klasör |
-|---|-------|----------------|--------|
-| 01 | Rate limiting | `LIMIT` (fixed window, sliding window, token bucket), outage modları | [`examples/01-rate-limiting`](examples/01-rate-limiting) |
+| # | Example | Ruvio feature | Folder |
+|---|---------|---------------|--------|
+| 01 | Rate limiting | `LIMIT` (fixed window, sliding window, token bucket), outage modes | [`examples/01-rate-limiting`](examples/01-rate-limiting) |
 
-Sıradaki fikirler: Fill (cache stampede), Distributed lock, Lease/Release, Distributed counters.
+Ideas for next: Fill (cache stampede), Distributed lock, Lease/Release, Distributed counters.
 
-## Yapı
+## Layout
 
 ```
 RuvioExamples/
-├─ infra/                  docker-compose: Ruvio preview sunucusu + UI
+├─ infra/                  docker-compose: Ruvio preview server + UI
 ├─ shared/
-│  ├─ RuvioExamples.LoadKit     yük üretimi: sanal client'lar, fake bekleme, çoklu instance, istatistik (UI'sız)
-│  └─ RuvioExamples.Desktop     "Ruvio Load Console" (WinForms): soru soran sihirbaz + canlı panel, tüm örneklerin ortak arayüzü
+│  ├─ RuvioExamples.LoadKit     load generation: virtual clients, fake delays, multiple instances, statistics (no UI)
+│  └─ RuvioExamples.Desktop     "Ruvio Load Console" (WinForms): a wizard that asks questions + a live panel, shared by all examples
 ├─ examples/
 │  └─ 01-rate-limiting/
-│     ├─ RateLimiting.Api       örnek API (naive, fixed, sliding, bucket)
-│     └─ console.json          konsolun bu örnek için bilgisi: endpoint, senaryo, etiketler
-├─ docs/                   video akışı, canlı kodlama adımları, preview notları
+│     ├─ RateLimiting.Api       sample API (naive, fixed, sliding, bucket)
+│     └─ console.json          what the console needs to know about this example: endpoints, scenarios, labels
+├─ docs/                   video flow, live-coding steps, preview notes
 └─ scripts/                up / api / console / down
 ```
 
-## Hızlı başlangıç
+## Quick start
 
 ```powershell
 .\scripts\up.ps1          # Ruvio (6379) + UI (http://127.0.0.1:8080)
-.\scripts\api.ps1         # api-1 (5001) ve api-2 (5002), ayrı pencerelerde
+.\scripts\api.ps1         # api-1 (5001) and api-2 (5002), in separate windows
 .\scripts\console.ps1     # Ruvio Load Console
 ```
 
-Konsolda bir senaryo seç (`1 · No limit` … `5 · Ruvio goes down`), **Start**'a bas. Takeler arasında **Reset limits**.
+Pick a scenario in the console (`1 · No limit` … `5 · Ruvio goes down`) and press **Start**. Use **Reset limits** between takes.
 
-Gerekenler: Docker Desktop, .NET 10 SDK, Windows (konsol WinForms).
+Requirements: Docker Desktop, .NET 10 SDK, Windows (the console is WinForms).
 
-## Preview sürümleri
+## Preview versions
 
-Bu repo Ruvio'nun **preview** paketlerine ve sunucusuna yazıldı. Sürümler tek yerde: `Directory.Packages.props` ve
-`infra/docker-compose.yml`. Neyin preview'a özel olduğu: [docs/preview-features.md](docs/preview-features.md).
+This repo is written against Ruvio's **preview** packages and server. The versions live in one place: `Directory.Packages.props` and
+`infra/docker-compose.yml`. What is preview-specific: [docs/preview-features.md](docs/preview-features.md).
 
-## Dokümanlar
+## Docs
 
-- [docs/00-load-console.md](docs/00-load-console.md): ortak yük konsolu, komut satırı seçenekleri, yeni örneğe nasıl bağlanır
-- [docs/01-rate-limiting/README.md](docs/01-rate-limiting/README.md): video akışı, canlı kodlama adımları, sorun giderme
-- [docs/preview-features.md](docs/preview-features.md): preview'a özel değişiklikler
+- [docs/00-load-console.md](docs/00-load-console.md): the shared load console, command-line options, how to connect a new example
+- [docs/01-rate-limiting/README.md](docs/01-rate-limiting/README.md): video flow, live-coding steps, troubleshooting
+- [docs/preview-features.md](docs/preview-features.md): preview-specific changes
