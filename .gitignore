@@ -1,0 +1,16 @@
+# Claude Code context for this repo stays local
+CLAUDE.md
+.claude/
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+*.suo
+TestResults/
+artifacts/
+
+# Local output (screenshots from the desktop console, recordings)
+out/
+*.log

@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!--
+    Ruvio packages. These are the PREVIEW builds the examples are written against.
+    Server image: salihcantekin/ruvio:0.3.5-preview.33  (see infra/docker-compose.yml)
+    When a stable release ships, change these two lines and re-run the examples.
+  -->
+  <ItemGroup>
+    <PackageVersion Include="Ruvio.Client.AspNetCore" Version="0.4.1-preview.33" />
+    <PackageVersion Include="Ruvio.AspNetCore.RateLimiting" Version="0.2.1-preview.2" />
+  </ItemGroup>
+</Project>

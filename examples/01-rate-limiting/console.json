@@ -1,0 +1,147 @@
+{
+  "title": "Rate limiting",
+  "description": "Clients send requests to an API with a slow, fragile backend behind it. Add Ruvio's rate limiter and watch who gets through.",
+  "targets": ["http://localhost:5001", "http://localhost:5002"],
+  "clientIdHeader": "X-Client-Id",
+  "instanceHeader": "X-Instance",
+  "workParameter": "workMs",
+  "reset": {
+    "path": "/api/admin/reset",
+    "label": "Reset limits",
+    "hint": "Flushes the demo database in Ruvio and clears the API's counters, so the next take starts from a full budget."
+  },
+  "outcomes": {
+    "success": { "label": "allowed" },
+    "rejected": { "label": "limited", "statuses": [429] }
+  },
+  "endpoints": [
+    {
+      "id": "naive",
+      "label": "naive, no limit",
+      "path": "/api/naive",
+      "expect": "Nothing limits the callers. With many clients the backend slows down, then starts answering 503."
+    },
+    {
+      "id": "fixed",
+      "label": "fixed window",
+      "path": "/api/fixed",
+      "expect": "Each client may send 10 requests per 10 seconds. The rest get 429 with Retry-After, and the budget is shared by every API instance."
+    },
+    {
+      "id": "sliding",
+      "label": "sliding window (preview)",
+      "path": "/api/sliding",
+      "expect": "Same budget, but the previous window still counts, so there is no double burst at the window edge. Retry-After is exact."
+    },
+    {
+      "id": "bucket",
+      "label": "token bucket (preview)",
+      "path": "/api/bucket",
+      "expect": "A bucket of 10 tokens that refills over 10 seconds: smooth traffic. Retry-After is exact."
+    },
+    {
+      "id": "global",
+      "label": "global default",
+      "path": "/api/ping",
+      "expect": "No policy of its own, so the whole-API policy demo-global applies: 30 requests per 10 seconds per client, shared with /api/time and every other endpoint without its own policy."
+    },
+    {
+      "id": "attribute",
+      "label": "attribute, [RuvioRateLimit]",
+      "path": "/api/attribute",
+      "expect": "The same fixed-window rule written as an attribute on the handler: 10 requests per 10 seconds per client."
+    },
+    {
+      "id": "shop-cart",
+      "label": "shared policy: shop",
+      "path": "/api/shop/cart",
+      "expect": "/api/shop/products and /api/shop/cart share the policy demo-shop, so they spend one budget of 10. Hit /api/shop/products with curl in between and the 429s arrive earlier."
+    },
+    {
+      "id": "shop-checkout",
+      "label": "own policy: checkout",
+      "path": "/api/shop/checkout",
+      "expect": "A stricter policy of its own (demo-checkout): only 3 requests per 10 seconds, whatever happens on the other shop endpoints."
+    },
+    {
+      "id": "ms-fixed",
+      "label": "Microsoft limiter, in-process",
+      "path": "/api/ms-fixed",
+      "expect": "The same rule counted in each API instance's own memory, so two instances double the budget. Needs the commented code in Program.cs."
+    }
+  ],
+  "bursts": [
+    {
+      "id": "edge",
+      "label": "window-edge burst",
+      "note": "One request opens the window, a burst lands just before it ends, and a second burst just after. A fixed window lets both through.",
+      "cycleSeconds": 21,
+      "steps": [
+        { "atSeconds": 0, "count": 1 },
+        { "atSeconds": 9.4, "count": 9 },
+        { "atSeconds": 10.1, "count": 10 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 · No limit",
+      "hint": "Eight busy clients, a slow backend, nobody limiting them. Watch the 503s and the latency.",
+      "endpoint": "naive",
+      "instances": 1,
+      "clients": 8,
+      "rate": 8,
+      "workMs": 400,
+      "jitter": 30,
+      "durationSeconds": 25
+    },
+    {
+      "name": "2 · Fixed window",
+      "hint": "Three clients, 10 requests per 10 s each. Everything above that is a 429.",
+      "endpoint": "fixed",
+      "instances": 1,
+      "clients": 3,
+      "rate": 3,
+      "workMs": 100,
+      "jitter": 30,
+      "staggerMs": 300,
+      "durationSeconds": 30
+    },
+    {
+      "name": "3 · Two instances",
+      "hint": "The same client talks to two API instances. The budget is still 10, because the counter lives in Ruvio.",
+      "endpoint": "fixed",
+      "instances": 2,
+      "clients": 2,
+      "rate": 3,
+      "workMs": 100,
+      "jitter": 30,
+      "staggerMs": 300,
+      "durationSeconds": 30
+    },
+    {
+      "name": "4 · Window edge",
+      "hint": "A burst before and after the window edge. Run it on fixed, then on sliding or token bucket.",
+      "endpoint": "fixed",
+      "instances": 1,
+      "clients": 1,
+      "rate": 1,
+      "workMs": 0,
+      "jitter": 0,
+      "durationSeconds": 40,
+      "burst": "edge"
+    },
+    {
+      "name": "5 · Ruvio goes down",
+      "hint": "Steady traffic. Stop the Ruvio container while it runs and see what the Outage mode does.",
+      "endpoint": "fixed",
+      "instances": 1,
+      "clients": 2,
+      "rate": 4,
+      "workMs": 100,
+      "jitter": 30,
+      "staggerMs": 300,
+      "durationSeconds": 0
+    }
+  ]
+}

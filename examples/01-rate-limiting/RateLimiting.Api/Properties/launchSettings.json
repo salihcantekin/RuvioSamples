@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "api-1": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5001",
+      "commandLineArgs": "--Demo:Instance=api-1",
+      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    },
+    "api-2": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5002",
+      "commandLineArgs": "--Demo:Instance=api-2",
+      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    }
+  }
+}

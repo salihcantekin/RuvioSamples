@@ -1,0 +1,38 @@
+# Local Ruvio preview used by every example in this repo.
+# Server and UI are pinned to the preview build the examples were written against.
+#   docker compose -f infra/docker-compose.yml up -d
+#   Ruvio  : 127.0.0.1:6379
+#   UI     : http://127.0.0.1:8080  (target: ruvio:6379)
+name: ruvio-examples
+
+services:
+  ruvio:
+    image: salihcantekin/ruvio:0.3.5-preview.33
+    container_name: ruvio-examples
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    environment:
+      RUVIO_ADDR: 0.0.0.0:6379
+      RUVIO_DURABILITY: memory
+      RUVIO_PROTECTED_MODE: "false"
+      RUVIO_ALLOW_UNAUTHENTICATED: "true"
+      RUVIO_DATA_DIR: /data
+    volumes:
+      - ruvio-data:/data
+
+  ruvio-ui:
+    image: salihcantekin/ruvio-ui:0.1.10-preview.33
+    container_name: ruvio-examples-ui
+    restart: unless-stopped
+    depends_on:
+      - ruvio
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      RUVIO_UI_ADDR: 0.0.0.0:8080
+      RUVIO_UI_TARGET_HOST: ruvio
+      RUVIO_UI_TARGET_PORT: "6379"
+
+volumes:
+  ruvio-data:
