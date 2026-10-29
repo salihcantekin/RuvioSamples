@@ -49,7 +49,7 @@ public static class Scenario
 
     public static void ShowPlan(Plan plan)
     {
-        var table = new Table().Title("[bold]Test plan[/]").AddColumn("Setting").AddColumn("Value");
+        var table = new Table().Title("[bold]Run plan[/]").AddColumn("Setting").AddColumn("Value");
         table.AddRow("Endpoint", plan.Endpoint.Path);
         table.AddRow("Instances", string.Join(", ", plan.Targets));
         table.AddRow("Virtual users", plan.VirtualUsers.ToString());
