@@ -71,3 +71,22 @@ public static class FillCache
         }
     }
 }
+
+// ---- GetOrCreateAsync version (commented out: uncomment to use it, or replace FillCache with it) ----
+//
+// public static class GetOrCreateCache
+// {
+//     public static async Task<(Product Product, CacheSource Source)> GetAsync(
+//         IRuvioClient ruvio, string key, TimeSpan ttl, Func<CancellationToken, Task<Product>> load, CancellationToken cancellationToken)
+//     {
+//         bool loaded = false;
+//
+//         Product product = await ruvio.GetOrCreateAsync(key, ttl, async ct =>
+//         {
+//             loaded = true;
+//             return await load(ct);
+//         }, ProductJson.Default.Product, cancellationToken: cancellationToken);
+//
+//         return (product, loaded ? CacheSource.Database : CacheSource.Cache);
+//     }
+// }

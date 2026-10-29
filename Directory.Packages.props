@@ -11,5 +11,6 @@
   <ItemGroup>
     <PackageVersion Include="Ruvio.Client.AspNetCore" Version="0.4.1-preview.33" />
     <PackageVersion Include="Ruvio.AspNetCore.RateLimiting" Version="0.2.1-preview.2" />
+    <PackageVersion Include="Spectre.Console" Version="0.57.2" />
   </ItemGroup>
 </Project>

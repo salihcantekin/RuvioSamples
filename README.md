@@ -22,8 +22,9 @@ RuvioExamples/
 │  │  ├─ RateLimiting.Api       sample API (naive, fixed, sliding, bucket)
 │  │  └─ console.json          what the console needs to know about this example: endpoints, scenarios, labels
 │  └─ 02-cache-stampede/
-│     ├─ CacheStampede.Api     sample API (no cache, classic cache, FILLGET / FILLSET)
-│     └─ console.json          the same for the cache example
+│     ├─ CacheStampede.Api     sample API (no cache, classic cache, FILLGET / FILLSET; GetOrCreateAsync commented out)
+│     ├─ CacheStampede.Load    terminal load console (Spectre.Console): asks the questions, shows the run live
+│     └─ console.json          config for the shared WinForms console (optional)
 ├─ docs/                   video flow, live-coding steps, preview notes
 └─ scripts/                up / api / api-cache / console / down
 ```
@@ -37,6 +38,17 @@ RuvioExamples/
 ```
 
 Example 02 uses its own API instances: `.\scripts\api-cache.ps1` (5011, 5012).
+
+### Example 02 on macOS (no PowerShell needed)
+
+```bash
+docker compose -f infra/docker-compose.yml up -d
+dotnet run --project examples/02-cache-stampede/CacheStampede.Api -- --urls http://localhost:5011 --Demo:Instance=api-1
+dotnet run --project examples/02-cache-stampede/CacheStampede.Api -- --urls http://localhost:5012 --Demo:Instance=api-2
+dotnet run --project examples/02-cache-stampede/CacheStampede.Load
+```
+
+The terminal console runs on any OS. Details: [docs/02-cache-stampede](docs/02-cache-stampede/README.md).
 
 Pick a scenario in the console (`1 · No limit` … `5 · Ruvio goes down`) and press **Start**. Use **Reset limits** between takes.
 
