@@ -1,0 +1,84 @@
+{
+  "title": "Cache stampede",
+  "description": "A hot product sits in Ruvio for 10 seconds. When it expires, every client misses at once and the database gets hit by all of them. Switch to FILLGET / FILLSET and watch one caller rebuild it while the others wait.",
+  "targets": ["http://localhost:5011", "http://localhost:5012"],
+  "clientIdHeader": "X-Client-Id",
+  "instanceHeader": "X-Instance",
+  "workParameter": "workMs",
+  "reset": {
+    "path": "/api/admin/reset",
+    "label": "Reset cache",
+    "hint": "Deletes the cached product and clears the database counters, so the next take starts with an empty cache."
+  },
+  "outcomes": {
+    "success": { "label": "served" },
+    "rejected": { "label": "failed", "statuses": [500, 503] }
+  },
+  "endpoints": [
+    {
+      "id": "no-cache",
+      "label": "no cache",
+      "path": "/api/no-cache",
+      "expect": "Nothing is cached, so every request is a database query of 800 ms. The database sees as many queries as there are requests."
+    },
+    {
+      "id": "classic",
+      "label": "classic cache (GET, SET)",
+      "path": "/api/classic",
+      "expect": "Hits are instant. When the value expires, every request that arrives during the 800 ms query misses, so the database gets a burst of queries at the same moment. Look at the database counter in /api/stats."
+    },
+    {
+      "id": "fill",
+      "label": "FILLGET / FILLSET",
+      "path": "/api/fill",
+      "expect": "At expiry one request is told to fill and queries the database. The others get Busy and wait for its value, so the database gets one query per expiry, whichever instance it lands on. Waiters respond after the builder finishes."
+    }
+  ],
+  "bursts": [],
+  "presets": [
+    {
+      "name": "1 · No cache",
+      "hint": "Ten busy clients at 5 requests per second, an 800 ms database and no cache. Every request is a query.",
+      "endpoint": "no-cache",
+      "instances": 1,
+      "clients": 10,
+      "rate": 5,
+      "workMs": 800,
+      "jitter": 30,
+      "durationSeconds": 20
+    },
+    {
+      "name": "2 · Classic cache",
+      "hint": "The same traffic with a 10-second cache. Watch the database counter jump at every expiry: many misses at once.",
+      "endpoint": "classic",
+      "instances": 1,
+      "clients": 10,
+      "rate": 5,
+      "workMs": 800,
+      "jitter": 30,
+      "durationSeconds": 30
+    },
+    {
+      "name": "3 · FILLGET / FILLSET",
+      "hint": "The same traffic and the same cache, with the fill protocol. One database query per expiry, and the rest wait a few milliseconds.",
+      "endpoint": "fill",
+      "instances": 1,
+      "clients": 10,
+      "rate": 5,
+      "workMs": 800,
+      "jitter": 30,
+      "durationSeconds": 30
+    },
+    {
+      "name": "4 · Two instances",
+      "hint": "Fill protocol on two API instances. The marker lives in Ruvio, so the database still gets one query per expiry.",
+      "endpoint": "fill",
+      "instances": 2,
+      "clients": 10,
+      "rate": 5,
+      "workMs": 800,
+      "jitter": 30,
+      "durationSeconds": 30
+    }
+  ]
+}
