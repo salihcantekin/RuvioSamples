@@ -2,6 +2,13 @@ using Ruvio.Client;
 
 namespace CacheStampede.Api;
 
+public enum CacheSource
+{
+    Cache,
+    Database,
+    Waited,
+}
+
 public sealed record DemoSettings(string Instance, TimeSpan CacheTtl, TimeSpan FillTimeout, string KeyPrefix)
 {
     public string ProductKey => KeyPrefix + "product:42";

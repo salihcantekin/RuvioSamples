@@ -23,7 +23,8 @@ public static class Scenario
         new("no-cache", "no cache (every request is a database query)", "/api/no-cache"),
         new("classic", "classic cache (GET, then SET)", "/api/classic"),
         new("fill", "FILLGET / FILLSET", "/api/fill"),
-        new("get-or-create", "GetOrCreateAsync (uncomment it in the API first)", "/api/get-or-create"),
+        new("fill-wait", "FILLGET WAIT (server-side wait on the shared connection)", "/api/fill-wait"),
+        new("get-or-create", "GetOrCreateAsync", "/api/get-or-create"),
     ];
 
     public static Plan Ask()

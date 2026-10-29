@@ -4,11 +4,11 @@ Three parts:
 
 | Part | Folder | What it is |
 |------|--------|------------|
-| API | [`CacheStampede.Api`](CacheStampede.Api) | Four endpoints for one hot product: `/api/no-cache`, `/api/classic`, `/api/fill`, and `/api/get-or-create` (commented out). A fake database that takes `workMs` per query, and `/api/stats`. |
+| API | [`CacheStampede.Api`](CacheStampede.Api) | Five endpoints for one hot product: `/api/no-cache`, `/api/classic`, `/api/fill`, `/api/fill-wait`, `/api/get-or-create`. Ruvio calls are inline in the minimal API handlers. The database is a separate service, `SlowDatabase`. |
 | Load console | [`CacheStampede.Load`](CacheStampede.Load) | Terminal load generator (Spectre.Console). Asks for instances, endpoint, virtual users, rate, duration and database time, then shows the run live. |
-| Old console config | [`console.json`](console.json) | Only for the shared WinForms console (`shared/RuvioExamples.Desktop`). Not needed for the terminal console. |
+| Desktop config | [`console.json`](console.json) | Only for the shared WinForms console (`shared/RuvioExamples.Desktop`). Not needed for the terminal console. |
 
-Video flow, live-coding steps and expected numbers: [docs/02-cache-stampede](../../docs/02-cache-stampede/README.md).
+Video flow, live-coding steps, the WAIT discussion and expected numbers: [docs/02-cache-stampede](../../docs/02-cache-stampede/README.md).
 
 ## Run it (macOS or Windows)
 
@@ -18,8 +18,3 @@ dotnet run --project examples/02-cache-stampede/CacheStampede.Api -- --urls http
 dotnet run --project examples/02-cache-stampede/CacheStampede.Api -- --urls http://localhost:5012 --Demo:Instance=api-2   # second terminal
 dotnet run --project examples/02-cache-stampede/CacheStampede.Load                        # the load console
 ```
-
-The Ruvio calls are in [`Caching.cs`](CacheStampede.Api/Caching.cs):
-
-- `FillCache`: `FILLGET` / `FILLSET`. Active.
-- `GetOrCreateCache`: `GetOrCreateAsync`. Commented out, together with its `/api/get-or-create` endpoint in `Program.cs`.
