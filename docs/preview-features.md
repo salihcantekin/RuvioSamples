@@ -32,10 +32,10 @@ Behaviors verified in this example (by stopping the Ruvio container):
 | `FailOpen` | 200, no limit | limits work again |
 | `FailClosed` + breaker | 503; after 3 failures an instant 503 + `Retry-After: 10` | 200 once the break time is over |
 
-## On the client side (not used in these examples, useful later)
+## On the client side
 
 Some of the `Ruvio.Client 0.4.1-preview` changes: `LimitSlidingAsync`, `LimitTokensAsync`, `...WithRetryAsync` and `LimitOutcome`;
-typed helpers `GetJsonAsync<T>` / `SetJsonAsync<T>` / `FillGetJsonAsync<T>` (for the Fill example);
+`FillGetAsync` / `FillSetAsync` are used in 02 (cache stampede). The typed helpers `GetJsonAsync<T>` / `SetJsonAsync<T>` / `FillGetJsonAsync<T>` and `GetOrCreateAsync` are not used in these examples;
 `RuvioClientOptions.CommandTimeout` (default **30 s**, a behavior change); failover tracking (`FollowPrimary`, `Seeds`);
 cluster `ASK`/`TRYAGAIN` retries.
 

@@ -5,8 +5,9 @@ Examples for the Ruvio YouTube series: in every video a real scenario, the probl
 | # | Example | Ruvio feature | Folder |
 |---|---------|---------------|--------|
 | 01 | Rate limiting | `LIMIT` (fixed window, sliding window, token bucket), outage modes | [`examples/01-rate-limiting`](examples/01-rate-limiting) |
+| 02 | Cache stampede | `FILLGET` / `FILLSET` (one builder for a missing value, across instances) | [`examples/02-cache-stampede`](examples/02-cache-stampede) |
 
-Ideas for next: Fill (cache stampede), Distributed lock, Lease/Release, Distributed counters.
+Ideas for next: Distributed lock, Lease/Release, Distributed counters.
 
 ## Layout
 
@@ -17,11 +18,14 @@ RuvioExamples/
 │  ├─ RuvioExamples.LoadKit     load generation: virtual clients, fake delays, multiple instances, statistics (no UI)
 │  └─ RuvioExamples.Desktop     "Ruvio Load Console" (WinForms): a wizard that asks questions + a live panel, shared by all examples
 ├─ examples/
-│  └─ 01-rate-limiting/
-│     ├─ RateLimiting.Api       sample API (naive, fixed, sliding, bucket)
-│     └─ console.json          what the console needs to know about this example: endpoints, scenarios, labels
+│  ├─ 01-rate-limiting/
+│  │  ├─ RateLimiting.Api       sample API (naive, fixed, sliding, bucket)
+│  │  └─ console.json          what the console needs to know about this example: endpoints, scenarios, labels
+│  └─ 02-cache-stampede/
+│     ├─ CacheStampede.Api     sample API (no cache, classic cache, FILLGET / FILLSET)
+│     └─ console.json          the same for the cache example
 ├─ docs/                   video flow, live-coding steps, preview notes
-└─ scripts/                up / api / console / down
+└─ scripts/                up / api / api-cache / console / down
 ```
 
 ## Quick start
@@ -31,6 +35,8 @@ RuvioExamples/
 .\scripts\api.ps1         # api-1 (5001) and api-2 (5002), in separate windows
 .\scripts\console.ps1     # Ruvio Load Console
 ```
+
+Example 02 uses its own API instances: `.\scripts\api-cache.ps1` (5011, 5012).
 
 Pick a scenario in the console (`1 · No limit` … `5 · Ruvio goes down`) and press **Start**. Use **Reset limits** between takes.
 
@@ -45,4 +51,5 @@ This repo is written against Ruvio's **preview** packages and server. The versio
 
 - [docs/00-load-console.md](docs/00-load-console.md): the shared load console, command-line options, how to connect a new example
 - [docs/01-rate-limiting/README.md](docs/01-rate-limiting/README.md): video flow, live-coding steps, troubleshooting
+- [docs/02-cache-stampede/README.md](docs/02-cache-stampede/README.md): video flow, live-coding steps, expected numbers, troubleshooting
 - [docs/preview-features.md](docs/preview-features.md): preview-specific changes
