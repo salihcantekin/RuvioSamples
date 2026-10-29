@@ -23,7 +23,8 @@ public static class Scenario
         new("no-cache", "no cache (every request is a database query)", "/api/no-cache"),
         new("classic", "classic cache (GET, then SET)", "/api/classic"),
         new("fill", "FILLGET / FILLSET", "/api/fill"),
-        new("get-or-create", "GetOrCreateAsync (uncomment it in the API first)", "/api/get-or-create"),
+        new("fill-wait", "FILLGET WAIT (server-side wait on the shared connection)", "/api/fill-wait"),
+        new("get-or-create", "GetOrCreateAsync", "/api/get-or-create"),
     ];
 
     public static Plan Ask()
@@ -48,7 +49,7 @@ public static class Scenario
 
     public static void ShowPlan(Plan plan)
     {
-        var table = new Table().Title("[bold]Test plan[/]").AddColumn("Setting").AddColumn("Value");
+        var table = new Table().Title("[bold]Run plan[/]").AddColumn("Setting").AddColumn("Value");
         table.AddRow("Endpoint", plan.Endpoint.Path);
         table.AddRow("Instances", string.Join(", ", plan.Targets));
         table.AddRow("Virtual users", plan.VirtualUsers.ToString());

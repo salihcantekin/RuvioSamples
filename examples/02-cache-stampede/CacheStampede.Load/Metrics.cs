@@ -48,7 +48,7 @@ public sealed class Metrics
             _lastError = status switch
             {
                 0 => "no answer from the API: is it running?",
-                404 => "404: this endpoint is not on the API (is it uncommented in Program.cs?)",
+                404 => "404: this endpoint is not on the API",
                 >= 500 => $"HTTP {status}: is Ruvio running?",
                 _ => _lastError,
             };

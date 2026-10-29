@@ -22,7 +22,7 @@ RuvioExamples/
 │  │  ├─ RateLimiting.Api       sample API (naive, fixed, sliding, bucket)
 │  │  └─ console.json          what the console needs to know about this example: endpoints, scenarios, labels
 │  └─ 02-cache-stampede/
-│     ├─ CacheStampede.Api     sample API (no cache, classic cache, FILLGET / FILLSET; GetOrCreateAsync commented out)
+│     ├─ CacheStampede.Api     sample API (no cache, classic, FILLGET, FILLGET WAIT, GetOrCreateAsync)
 │     ├─ CacheStampede.Load    terminal load console (Spectre.Console): asks the questions, shows the run live
 │     └─ console.json          config for the shared WinForms console (optional)
 ├─ docs/                   video flow, live-coding steps, preview notes

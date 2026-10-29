@@ -31,7 +31,7 @@
       "id": "fill",
       "label": "FILLGET / FILLSET",
       "path": "/api/fill",
-      "expect": "At expiry one request is told to fill and queries the database. The others get Busy and wait for its value, so the database gets one query per expiry, whichever instance it lands on. Waiters respond after the builder finishes."
+      "expect": "At expiry one request is told to fill and queries the database. The others get Busy and ask again until the value is stored, so the database gets one query per expiry, whichever instance it lands on."
     }
   ],
   "bursts": [],
