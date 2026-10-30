@@ -20,7 +20,9 @@ app.UseDemoSupport(demo);
 
 app.MapGet("/api/no-cache", async (SlowDatabase database, int? workMs, CancellationToken cancellationToken) =>
 {
-    Product product = await database.LoadProductAsync(demo.Instance, DemoSupport.LoadMs(workMs), cancellationToken);
+    Product product = await database.LoadProductAsync(demo.Instance,
+                                                      DemoSupport.LoadMs(workMs),
+                                                      cancellationToken);
 
     return DemoSupport.Served(demo, "no-cache", CacheSource.Database, product);
 });
@@ -30,10 +32,19 @@ app.MapGet("/api/classic", async (IRuvioClient ruvio, SlowDatabase database, int
     string? cached = await ruvio.GetStringAsync(demo.ProductKey, cancellationToken);
 
     if (cached is not null)
-        return DemoSupport.Served(demo, "classic", CacheSource.Cache, JsonSerializer.Deserialize(cached, ProductJson.Default.Product)!);
+    {
+        return DemoSupport.Served(demo,
+                                  "classic",
+                                  CacheSource.Cache,
+                                  JsonSerializer.Deserialize(cached, ProductJson.Default.Product)!);
+    }
 
     Product product = await database.LoadProductAsync(demo.Instance, DemoSupport.LoadMs(workMs), cancellationToken);
-    await ruvio.SetAsync(demo.ProductKey, JsonSerializer.Serialize(product, ProductJson.Default.Product), demo.CacheTtl, cancellationToken: cancellationToken);
+    
+    await ruvio.SetAsync(demo.ProductKey,
+                         JsonSerializer.Serialize(product, ProductJson.Default.Product),
+                         demo.CacheTtl,
+                         cancellationToken: cancellationToken);
 
     return DemoSupport.Served(demo, "classic", CacheSource.Database, product);
 });
@@ -51,7 +62,7 @@ app.MapGet("/api/fill", async (IRuvioClient ruvio, SlowDatabase database, int? w
         reply = await ruvio.FillGetAsync(demo.ProductKey, demo.FillTimeout, cancellationToken: cancellationToken);
     }
 
-    if (reply.State != FillState.Fill)
+    if (reply.State == FillState.Hit)
     {
         CacheSource source = waited ? CacheSource.Waited : CacheSource.Cache;
 
@@ -100,7 +111,8 @@ app.MapGet("/api/get-or-create", async (IRuvioClient ruvio, SlowDatabase databas
 {
     bool loaded = false;
 
-    Product product = await ruvio.GetOrCreateAsync(demo.ProductKey, demo.CacheTtl, async token =>
+    Product product = await ruvio.GetOrCreateAsync(demo.ProductKey, demo.CacheTtl, 
+    async token =>
     {
         loaded = true;
         return await database.LoadProductAsync(demo.Instance, DemoSupport.LoadMs(workMs), token);

@@ -37,4 +37,7 @@ await AnsiConsole.Live(Dashboard.Render(plan, metrics.Take(0), 0, false))
 await run;
 
 Summary.Write(plan, metrics.Take(runner.Elapsed), runner);
+
+Console.WriteLine("\n\nPress [ANY] key to exit");
+Console.ReadKey();
 return 0;
